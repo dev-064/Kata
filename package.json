@@ -9,7 +9,8 @@
     "test": "jest --coverage"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": ["/src/utils/db.js"]
   },
   "repository": {
     "type": "git",
