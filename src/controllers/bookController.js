@@ -9,4 +9,15 @@ const addBook = async (req, res) => {
     }
 };
 
-module.exports = { addBook };
+
+const borrowBook = async (req, res) => {
+    try {
+        const book = await bookService.borrowBook(req.params.isbn);
+        res.status(200).json(book);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+
+module.exports = { addBook ,borrowBook};

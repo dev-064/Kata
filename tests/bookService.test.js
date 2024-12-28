@@ -145,3 +145,43 @@ describe('Book Service - borrowBook', () => {
         expect(Book.findOne).toHaveBeenCalledWith({ isbn, isAvailable: true });
     });
 })
+
+describe('Book Service - returnBook', () => {
+    beforeEach(() => {
+        jest.clearAllMocks(); // Clear mocks before each test
+    });
+
+    it('should successfully return a book', async () => {
+        const isbn = '1234567890345';
+        const mockBook = {
+            _id: 'mockedId',
+            isbn,
+            title: 'Node.js Basics',
+            author: 'John Doe',
+            publicationYear: 2023,
+            isAvailable: false,
+            save: jest.fn().mockResolvedValue(),
+        };
+
+        Book.findOne.mockResolvedValue(mockBook);
+
+        const borrowedBook = await bookService.borrowBook(isbn);
+
+        // Assertions
+        expect(Book.findOne).toHaveBeenCalledWith({ isbn, isAvailable: false });
+        expect(mockBook.isAvailable).toBe(true); // Updated to available
+        expect(mockBook.save).toHaveBeenCalled(); // Save was called
+        expect(borrowedBook).toEqual(mockBook);
+    });
+
+    it('should throw an error if the book is already available', async () => {
+        const isbn = '1234567890345';
+
+        Book.findOne.mockResolvedValue(null); // No book found
+
+        await expect(bookService.borrowBook(isbn)).rejects.toThrow('Book is already available');
+
+        // Assertions
+        expect(Book.findOne).toHaveBeenCalledWith({ isbn, isAvailable: false });
+    });
+})
