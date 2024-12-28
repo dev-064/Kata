@@ -42,6 +42,16 @@ const returnBook = async (isbn) => {
     return book
 }
 
+const getAvailableBooks = async () => {
+
+    const book = await Book.find({});
+    if (!book) {
+        throw new Error('There are no available books');
+    }
+
+    return book
+}
 
 
-module.exports = { addBook, borrowBook, returnBook };
+
+module.exports = { addBook, borrowBook, returnBook, getAvailableBooks };
