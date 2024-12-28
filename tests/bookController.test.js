@@ -7,7 +7,8 @@ const request = supertest(app);
 // Mock the Book model
 jest.mock('../src/services/bookService', () => ({
     addBook: jest.fn(),
-    borrowBook : jest.fn()
+    borrowBook: jest.fn(),
+    returnBook: jest.fn()
 }));
 
 jest.mock('mongoose', () => ({
@@ -29,7 +30,7 @@ describe('Book Controller - addBook', () => {
             publicationYear: 2023,
         };
 
-        const mockResponse = { ...bookData, _id: 'mockedId' ,isAvailable : true}
+        const mockResponse = { ...bookData, _id: 'mockedId', isAvailable: true }
 
         bookService.addBook.mockResolvedValue(mockResponse);
 
@@ -98,5 +99,45 @@ describe('Book Controller - borrowBook', () => {
         expect(response.status).toBe(400);
         expect(bookService.borrowBook).toHaveBeenCalledWith(isbn);
         expect(response.body.message).toBe('Book not available');
+    });
+});
+
+describe('Book Controller - returnBook', () => {
+    beforeEach(() => {
+        jest.clearAllMocks(); // Reset mock call history before each test
+    });
+
+    it('should successfully return a book and return 200', async () => {
+        const isbn = '1234567890345';
+        const mockBook = {
+            _id: 'mockedId',
+            isbn,
+            title: 'Node.js Basics',
+            author: 'John Doe',
+            publicationYear: 2023,
+            isAvailable: true,
+        };
+
+        bookService.returnBook.mockResolvedValue(mockBook); // Mock service response
+
+        const response = await request.put(`/api/books/return/${isbn}`);
+
+        // Assertions
+        expect(response.status).toBe(200);
+        expect(bookService.returnBook).toHaveBeenCalledWith(isbn);
+        expect(response.body).toEqual(mockBook);
+    });
+
+    it('should return 400 if the book is already available', async () => {
+        const isbn = '1234567890345';
+
+        bookService.returnBook.mockRejectedValue(new Error('Book is already available')); // Mock error
+
+        const response = await request.put(`/api/books/return/${isbn}`);
+
+        // Assertions
+        expect(response.status).toBe(400);
+        expect(bookService.returnBook).toHaveBeenCalledWith(isbn);
+        expect(response.body.message).toBe('Book is already available');
     });
 });
