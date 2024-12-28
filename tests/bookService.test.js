@@ -144,5 +144,4 @@ describe('Book Service - borrowBook', () => {
         // Assertions
         expect(Book.findOne).toHaveBeenCalledWith({ isbn, isAvailable: true });
     });
-
 })

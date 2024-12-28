@@ -18,4 +18,10 @@ const addBookValidations = (bookData) => {
     }
 }
 
-module.exports = { addBookValidations }
+const borrowBookValidations = (isbn) => {
+    if (!isbn || typeof isbn !== 'string' || isbn.length !== 13) {
+        throw new Error('Validation error: ISBN is required, must be a string, and it should be of 13 digits');
+    }
+}
+
+module.exports = { addBookValidations,borrowBookValidations }
