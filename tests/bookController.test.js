@@ -8,7 +8,8 @@ const request = supertest(app);
 jest.mock('../src/services/bookService', () => ({
     addBook: jest.fn(),
     borrowBook: jest.fn(),
-    returnBook: jest.fn()
+    returnBook: jest.fn(),
+    getAvailableBooks: jest.fn()
 }));
 
 jest.mock('mongoose', () => ({
@@ -139,5 +140,40 @@ describe('Book Controller - returnBook', () => {
         expect(response.status).toBe(400);
         expect(bookService.returnBook).toHaveBeenCalledWith(isbn);
         expect(response.body.message).toBe('Book is already available');
+    });
+});
+describe('Book Controller - getAvailableBooks', () => {
+    beforeEach(() => {
+        jest.clearAllMocks(); // Reset mock call history before each test
+    });
+
+    it('should successfully return available book and return 201', async () => {
+        const mockBook = [{
+            _id: 'mockedId',
+            isbn: '1234567890345',
+            title: 'Node.js Basics',
+            author: 'John Doe',
+            publicationYear: 2023,
+            isAvailable: true,
+        }];
+
+        bookService.returnBook.mockResolvedValue(mockBook); // Mock service response
+
+        const response = await request.get(`/api/books`);
+
+        // Assertions
+        expect(response.status).toBe(201);
+        expect(response.body).toEqual(mockBook);
+    });
+
+    it('should return 400 if the there are no available books', async () => {
+
+        bookService.getAvailableBooks.mockRejectedValue(new Error('There are no available books')); // Mock error
+
+        const response = await request.get(`/api/books`);
+
+        // Assertions
+        expect(response.status).toBe(400);
+        expect(response.body.message).toBe('There are no available books');
     });
 });

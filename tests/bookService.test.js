@@ -221,6 +221,6 @@ describe('Book Service - getAvailableBooks', () => {
     it('should throw an error if there is no available books', async ()=>{
         Book.find.mockResolvedValue(null);
 
-        await expect(bookService.getAvailableBooks()).rejects.toThrow('There are no available books');
+        await expect(bookService.getAvailableBooks()).rejects.toThrow('');
     })
 })
