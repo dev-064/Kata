@@ -215,6 +215,7 @@ describe('Book Service - getAvailableBooks', () => {
 
         //Assertions
         expect(availableBooks).toEqual(mockAvailableBooks);
+        expect(Book.find).toHaveBeenCalledWith({isAvailable : true})
 
     })
 
@@ -222,5 +223,7 @@ describe('Book Service - getAvailableBooks', () => {
         Book.find.mockResolvedValue(null);
 
         await expect(bookService.getAvailableBooks()).rejects.toThrow('');
+        
+        expect(Book.find).toHaveBeenCalledWith({isAvailable : true})
     })
 })

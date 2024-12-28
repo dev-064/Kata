@@ -157,7 +157,7 @@ describe('Book Controller - getAvailableBooks', () => {
             isAvailable: true,
         }];
 
-        bookService.returnBook.mockResolvedValue(mockBook); // Mock service response
+        bookService.getAvailableBooks.mockResolvedValue(mockBook); // Mock service response
 
         const response = await request.get(`/api/books`);
 
