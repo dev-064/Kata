@@ -92,7 +92,7 @@ describe('Book Service - addBook', () => {
                 isbn: '1234567890345',
                 title: 'Node.js Basics',
                 author: 'John Doe',
-                publicationYear: 2045
+                publicationYear: 2023
             },
         ];
 
