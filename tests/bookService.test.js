@@ -5,6 +5,7 @@ const bookService = require('../src/services/bookService');
 jest.mock('../src/models/bookModel', () => ({
     findOne: jest.fn(),
     create: jest.fn(),
+    save: jest.fn()
 }));
 
 
@@ -13,7 +14,7 @@ describe('Book Service - addBook', () => {
         // Clear all mocks before each test
         jest.clearAllMocks();
     });
-    
+
     it('should successfully add a book', async () => {
         const bookData = {
             isbn: '1234567890345',
@@ -84,7 +85,7 @@ describe('Book Service - addBook', () => {
                 //isbn is not of 13 digits
                 isbn: '123456789034',
                 title: 'Node.js Basics',
-                author : "John Doe",
+                author: "John Doe",
                 publicationYear: 2023,
             },
             {
@@ -92,14 +93,56 @@ describe('Book Service - addBook', () => {
                 isbn: '1234567890345',
                 title: 'Node.js Basics',
                 author: 'John Doe',
-                publicationYear: 2023
+                publicationYear: 2045
             },
         ];
 
-        for (let i = 0;i<booksData.length;i++) {
+        for (let i = 0; i < booksData.length; i++) {
             expect(Book.findOne).not.toHaveBeenCalled();
             expect(Book.create).not.toHaveBeenCalled();
             await expect(bookService.addBook(booksData[i])).rejects.toThrow(/Validation/); // Expect a validation error
         }
     });
 });
+
+
+describe('Book Service - borrowBook', () => {
+    beforeEach(() => {
+        jest.clearAllMocks(); // Clear mocks before each test
+    });
+
+    it('should successfully borrow a book', async () => {
+        const isbn = '1234567890345';
+        const mockBook = {
+            _id: 'mockedId',
+            isbn,
+            title: 'Node.js Basics',
+            author: 'John Doe',
+            publicationYear: 2023,
+            isAvailable: true,
+            save: jest.fn().mockResolvedValue(),
+        };
+
+        Book.findOne.mockResolvedValue(mockBook);
+
+        const borrowedBook = await bookService.borrowBook(isbn);
+
+        // Assertions
+        expect(Book.findOne).toHaveBeenCalledWith({ isbn, isAvailable: true });
+        expect(mockBook.isAvailable).toBe(false); // Updated to unavailable
+        expect(mockBook.save).toHaveBeenCalled(); // Save was called
+        expect(borrowedBook).toEqual(mockBook);
+    });
+
+    it('should throw an error if the book is not available', async () => {
+        const isbn = '1234567890345';
+
+        Book.findOne.mockResolvedValue(null); // No book found
+
+        await expect(bookService.borrowBook(isbn)).rejects.toThrow('Book not available');
+
+        // Assertions
+        expect(Book.findOne).toHaveBeenCalledWith({ isbn, isAvailable: true });
+    });
+
+})
