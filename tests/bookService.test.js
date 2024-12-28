@@ -3,6 +3,7 @@ const bookService = require('../src/services/bookService');
 
 // Mock the Book model
 jest.mock('../src/models/bookModel', () => ({
+    find: jest.fn(),
     findOne: jest.fn(),
     create: jest.fn(),
     save: jest.fn()
@@ -182,7 +183,44 @@ describe('Book Service - returnBook', () => {
 
         await expect(bookService.returnBook(isbn)).rejects.toThrow('Book is already available');
 
-        // Assertions
         expect(Book.findOne).toHaveBeenCalledWith({ isbn, isAvailable: false });
     });
+})
+
+describe('Book Service - getAvailableBooks', () => {
+    beforeEach(() => {
+        jest.clearAllMocks(); // Clear mocks before each test
+    });
+
+    it('should successfully give the available books', async () => {
+        const mockAvailableBooks = [{
+            _id: 'mockedId',
+            isbn : '1234567890345',
+            title: 'Node.js Basics',
+            author: 'John Doe',
+            publicationYear: 2023,
+            isAvailable: true,
+        },{
+            _id: 'mockedId1',
+            isbn : '1234567890945',
+            title: 'Node.js Basics part 2',
+            author: 'Johnny Doe',
+            publicationYear: 2023,
+            isAvailable: true,
+        }]
+
+        Book.find.mockResolvedValue(mockAvailableBooks);
+
+        const availableBooks = await bookService.getAvailableBooks();
+
+        //Assertions
+        expect(availableBooks).toEqual(mockAvailableBooks);
+
+    })
+
+    it('should throw an error if there is no available books', async ()=>{
+        Book.find.mockResolvedValue(null);
+
+        await expect(bookService.getAvailableBooks()).rejects.toThrow('There are no available books');
+    })
 })
