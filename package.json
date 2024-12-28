@@ -10,7 +10,18 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "coveragePathIgnorePatterns": ["/src/utils/db.js"]
+    "coveragePathIgnorePatterns": [
+      "/src/utils/db.js"
+    ],
+    "reporters": [
+      "default",
+      [
+        "./node_modules/jest-html-reporter",
+        {
+          "pageTitle": "Test Report"
+        }
+      ]
+    ]
   },
   "repository": {
     "type": "git",
@@ -33,6 +44,7 @@
   "devDependencies": {
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
+    "jest-html-reporter": "^3.10.2",
     "nodemon": "^3.1.9",
     "supertest": "^7.0.0"
   }
