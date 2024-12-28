@@ -165,7 +165,7 @@ describe('Book Service - returnBook', () => {
 
         Book.findOne.mockResolvedValue(mockBook);
 
-        const borrowedBook = await bookService.borrowBook(isbn);
+        const borrowedBook = await bookService.returnBook(isbn);
 
         // Assertions
         expect(Book.findOne).toHaveBeenCalledWith({ isbn, isAvailable: false });
@@ -174,13 +174,13 @@ describe('Book Service - returnBook', () => {
         expect(borrowedBook).toEqual(mockBook);
     });
 
-    
+
     it('should throw an error if the book is already available', async () => {
         const isbn = '1234567890345';
 
         Book.findOne.mockResolvedValue(null); // No book found
 
-        await expect(bookService.borrowBook(isbn)).rejects.toThrow('Book is already available');
+        await expect(bookService.returnBook(isbn)).rejects.toThrow('Book is already available');
 
         // Assertions
         expect(Book.findOne).toHaveBeenCalledWith({ isbn, isAvailable: false });

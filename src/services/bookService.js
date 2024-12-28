@@ -15,7 +15,7 @@ const addBook = async (bookData) => {
 
 
 const borrowBook = async (isbn) => {
-    validations.borrowBookValidations(isbn);
+    validations.borrowAndReturnBookValidations(isbn);
 
     const book = await Book.findOne({ isbn, isAvailable: true });
     if (!book) {
@@ -28,6 +28,20 @@ const borrowBook = async (isbn) => {
     return book;
 };
 
+const returnBook = async (isbn) => {
+    validations.borrowAndReturnBookValidations(isbn);
+
+    const book = await Book.findOne({ isbn, isAvailable: false });
+    if (!book) {
+        throw new Error('Book is already available');
+    }
+
+    book.isAvailable = true;
+    await book.save();
+
+    return book
+}
 
 
-module.exports = { addBook,borrowBook };
+
+module.exports = { addBook, borrowBook, returnBook };
