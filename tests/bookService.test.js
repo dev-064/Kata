@@ -220,10 +220,10 @@ describe('Book Service - getAvailableBooks', () => {
     })
 
     it('should throw an error if there is no available books', async ()=>{
-        Book.find.mockResolvedValue(null);
+        Book.find.mockResolvedValue([]);
 
         await expect(bookService.getAvailableBooks()).rejects.toThrow('');
-        
+
         expect(Book.find).toHaveBeenCalledWith({isAvailable : true})
     })
 })

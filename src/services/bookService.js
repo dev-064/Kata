@@ -44,8 +44,8 @@ const returnBook = async (isbn) => {
 
 const getAvailableBooks = async () => {
 
-    const book = await Book.find({});
-    if (!book) {
+    const book = await Book.find({ isAvailable: true });
+    if (book.length === 0) {
         throw new Error('There are no available books');
     }
 
