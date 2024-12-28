@@ -13,7 +13,7 @@ const addBook = async (req, res) => {
 const borrowBook = async (req, res) => {
     try {
         const book = await bookService.borrowBook(req.params.isbn);
-        res.status(200).json(book);
+        res.status(201).json(book);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -23,7 +23,7 @@ const borrowBook = async (req, res) => {
 const returnBook = async (req, res) => {
     try {
         const book = await bookService.returnBook(req.params.isbn);
-        res.status(200).json(book);
+        res.status(201).json(book);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

@@ -67,7 +67,7 @@ describe('Book Controller - borrowBook', () => {
         jest.clearAllMocks(); // Reset mock call history before each test
     });
 
-    it('should successfully borrow a book and return 200', async () => {
+    it('should successfully borrow a book and return 201', async () => {
         const isbn = '1234567890345';
         const mockBook = {
             _id: 'mockedId',
@@ -83,7 +83,7 @@ describe('Book Controller - borrowBook', () => {
         const response = await request.put(`/api/books/borrow/${isbn}`);
 
         // Assertions
-        expect(response.status).toBe(200);
+        expect(response.status).toBe(201);
         expect(bookService.borrowBook).toHaveBeenCalledWith(isbn);
         expect(response.body).toEqual(mockBook);
     });
@@ -107,7 +107,7 @@ describe('Book Controller - returnBook', () => {
         jest.clearAllMocks(); // Reset mock call history before each test
     });
 
-    it('should successfully return a book and return 200', async () => {
+    it('should successfully return a book and return 201', async () => {
         const isbn = '1234567890345';
         const mockBook = {
             _id: 'mockedId',
@@ -123,7 +123,7 @@ describe('Book Controller - returnBook', () => {
         const response = await request.put(`/api/books/return/${isbn}`);
 
         // Assertions
-        expect(response.status).toBe(200);
+        expect(response.status).toBe(201);
         expect(bookService.returnBook).toHaveBeenCalledWith(isbn);
         expect(response.body).toEqual(mockBook);
     });
