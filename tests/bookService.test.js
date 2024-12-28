@@ -174,6 +174,7 @@ describe('Book Service - returnBook', () => {
         expect(borrowedBook).toEqual(mockBook);
     });
 
+    
     it('should throw an error if the book is already available', async () => {
         const isbn = '1234567890345';
 
